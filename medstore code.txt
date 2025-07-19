@@ -1,0 +1,95 @@
+#include <stdio.h>
+#include <string.h>
+
+struct Medicine {
+    int productCode;
+    char name[50];
+    char packing[50];
+    char company[50];
+    int quantity;
+    int rate;
+};
+
+struct Bill {
+    int billNumber;
+    char customerName[50];
+    char doctorName[50];
+    int productCode;
+    int quantity;
+};
+
+struct Medicine inventory[100];
+struct Bill bills[100];
+int medCount = 0;
+int billCount = 0;
+
+void addMedicine() {
+    struct Medicine m;
+    printf("Enter product code: ");
+    scanf("%d", &m.productCode);
+    printf("Enter medicine name: ");
+    scanf("%s", m.name);
+    printf("Enter packing details: ");
+    scanf("%s", m.packing);
+    printf("Enter company name: ");
+    scanf("%s", m.company);
+    printf("Enter quantity: ");
+    scanf("%d", &m.quantity);
+    printf("Enter rate: ");
+    scanf("%d", &m.rate);
+    
+    inventory[medCount++] = m;
+    printf("Medicine added successfully!\n");
+}
+
+void displayMedicines() {
+    printf("\n%-10s %-15s %-15s %-15s %-10s %-10s\n", "Code", "Name", "Packing", "Company", "Qty", "Rate");
+    for (int i = 0; i < medCount; i++) {
+        printf("%-10d %-15s %-15s %-15s %-10d %-10d\n",
+               inventory[i].productCode, inventory[i].name, inventory[i].packing,
+               inventory[i].company, inventory[i].quantity, inventory[i].rate);
+    }
+}
+
+void createBill() {
+    struct Bill b;
+    b.billNumber = billCount + 1;
+
+    printf("Enter customer name: ");
+    scanf("%s", b.customerName);
+    printf("Enter doctor name: ");
+    scanf("%s", b.doctorName);
+    printf("Enter medicine product code: ");
+    scanf("%d", &b.productCode);
+    printf("Enter quantity: ");
+    scanf("%d", &b.quantity);
+
+    bills[billCount++] = b;
+
+    printf("Bill created! Bill number: %d\n", b.billNumber);
+}
+
+void displayBills() {
+    printf("\n%-5s %-15s %-15s %-10s %-10s %-10s %-10s\n", "Bill", "Customer", "Doctor", "Code", "Name", "Qty", "Amount");
+
+    for (int i = 0; i < billCount; i++) {
+        struct Medicine *m = NULL;
+        for (int j = 0; j < medCount; j++) {
+            if (inventory[j].productCode == bills[i].productCode) {
+                m = &inventory[j];
+                break;
+            }
+        }
+
+        if (m != NULL) {
+            int amount = bills[i].quantity * m->rate;
+            printf("%-5d %-15s %-15s %-10d %-10s %-10d %-10d\n",
+                   bills[i].billNumber, bills[i].customerName, bills[i].doctorName,
+                   m->productCode, m->name, bills[i].quantity, amount);
+        } else {
+            printf("%-5d %-15s %-15s %-10d %-10s %-10s %-10s\n",
+                   bills[i].billNumber, bills[i].customerName, bills[i]);
+            
+            }
+        }
+    }
